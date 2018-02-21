@@ -27,15 +27,16 @@ jobs:
       - run: 
         name: Build app
         command: go build -o helloworld main.go
-
+        
       - run:
         name: Install dependencies
+        working_directory: /
         command: |
-          apk add --no-cache \
-            py-pip=9.0.0-r1
-          pip install \
-            awscli==1.11.76 \
-            docker-compose==1.12.0
+          apt-get -y -qq update
+          apt-get -y -qq install python3.4-dev
+          curl -O https://bootstrap.pypa.io/get-pip.py
+          python3.4 get-pip.py --user
+          pip install awscli --upgrade --user
             
       # - restore_cache:
       #     keys:

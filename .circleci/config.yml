@@ -18,14 +18,16 @@ jobs:
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/aphexddb/helloworld
+
+    environment:
+      TAG: ${CIRCLE_SHA1}
+
     steps:
       # build the application
       - checkout 
       - run: go get -v -t -d ./...
       - run: go test -v ./...      
-      - run: 
-          name: Build helloworld
-          command: go build -o helloworld main.go
+      - run: go build -o helloworld main.go
 
       - setup_remote_docker:
           docker_layer_caching: true
@@ -35,7 +37,8 @@ jobs:
         
       - run: 
           name: Build application Docker image
-          command: sudo docker build -t aphexddb/helloworld:${CIRCLE_SHA1} .      
+          command: |
+            docker build -t aphexddb/helloworld:${TAG} .      
 
       - run:
           name: Install AWS CLI
@@ -51,6 +54,6 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               login="$(aws ecr get-login)"
               ${login}
-              sudo docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-              sudo docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              docker tag helloworld "${ECR_ENDPOINT}/helloworld:${TAG}"
+              docker push "${ECR_ENDPOINT}/helloworld:${TAG}"
             fi            

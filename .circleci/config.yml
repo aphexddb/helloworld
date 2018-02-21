@@ -50,9 +50,13 @@ jobs:
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
+              tag="docker tag helloworld:latest ${ECR_ENDPOINT}/helloworld:latest"
+              push="docker push ${ECR_ENDPOINT}/helloworld:latest"
               ${login}
-              docker tag helloworld:latest ${ECR_ENDPOINT}/helloworld:latest
-              docker push ${ECR_ENDPOINT}/helloworld:latest
+              echo "Tagging image -> ${tag}"
+              ${tag}
+              echo "Pushing image -> ${push}"
+              ${push}
               # docker tag helloworld:${CIRCLE_SHA1} "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
               # docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
             fi            

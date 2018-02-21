@@ -53,6 +53,6 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email)"
               ${login}
-              docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              docker tag aphexddb/helloworld:${CIRCLE_SHA1} "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
               docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
             fi            

@@ -24,6 +24,8 @@ func MeowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.Println("starting helloworld")
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/meow", MeowHandler)

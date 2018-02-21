@@ -21,46 +21,41 @@ jobs:
     steps:
       - checkout
       # - setup_remote_docker
-
       - run: go get -v -t -d ./...
       - run: go test -v ./...      
       - run: 
-        name: Build app
+        name: Build helloworld
         command: go build -o helloworld main.go
 
-      - run:
-        name: Install dependencies
-        working_directory: /
-        command: |
-          sudo apt-get -y -qq update
-          sudo apt-get -y -qq install python3.4-dev
-          sudo curl -O https://bootstrap.pypa.io/get-pip.py
-          sudo python3.4 get-pip.py --user
-          sudo pip install awscli --upgrade --user
+      - run: apt-get install -y -qq update
+      - run: apt-get install -y -qq install sudo python3.4-dev
+      - run: curl -O https://bootstrap.pypa.io/get-pip.py
+      - run: python3.4 get-pip.py --user
+      - run: pip install awscli --upgrade --user
             
       # - restore_cache:
       #     keys:
       #       - v1-{{ .Branch }}
       #     paths:
-      #       - /caches/app.tar
+      #       - /caches/helloworld.tar
       # - run:
       #     name: Load Docker image layer cache
       #     command: |
       #       set +o pipefail
-      #       docker load -i /caches/app.tar | true
+      #       docker load -i /caches/helloworld.tar | true
       # - run:
       #     name: Build application Docker image
       #     command: |
-      #       docker build --cache-from=app -t app .
+      #       docker build --cache-from=helloworld -t helloworld .
       # - run:
       #   name: Save Docker image layer cache
       #   command: |
       #     mkdir -p /caches
-      #     docker save -o /caches/app.tar app
+      #     docker save -o /caches/helloworld.tar helloworld
       # - save_cache:
       #   key: v1-{{ .Branch }}-{{ epoch }}
       #   paths:
-      #     - /caches/app.tar
+      #     - /caches/helloworld.tar
       # - run:
       #     name: Run tests
       #     command: |
@@ -71,7 +66,7 @@ jobs:
       #     if [ "${CIRCLE_BRANCH}" == "master" ]; then
       #       login="$(aws ecr get-login)"
       #       ${login}
-      #       docker tag app "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
-      #       docker push "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
+      #       docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+      #       docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
       #     fi            
 

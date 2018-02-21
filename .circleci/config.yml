@@ -32,10 +32,11 @@ jobs:
       # build the application image
       # -v /var/run/docker.sock:/var/run/docker.sock           
         
+      # run with sudo for local dev builds
       - run: 
           name: Build application Docker image
           command: |
-            sudo docker build -t aphexddb/helloworld:${CIRCLE_SHA1} .      
+            docker build -t aphexddb/helloworld:${CIRCLE_SHA1} .      
 
       - run:
           name: Install AWS CLI
@@ -52,6 +53,6 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email)"
               ${login}
-              sudo docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-              sudo docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
             fi            

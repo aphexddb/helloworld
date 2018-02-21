@@ -20,53 +20,35 @@ jobs:
     working_directory: /go/src/github.com/aphexddb/helloworld
     steps:
       - checkout
-      # - setup_remote_docker
+      - setup_remote_docker
+
+      # build the application
       - run: go get -v -t -d ./...
       - run: go test -v ./...      
       - run: 
-        name: Build helloworld
-        command: go build -o helloworld main.go
+          name: Build helloworld
+          command: go build -o helloworld main.go
 
-      - run: apt-get install -y -qq update
-      - run: apt-get install -y -qq install sudo python3.4-dev
-      - run: curl -O https://bootstrap.pypa.io/get-pip.py
-      - run: python3.4 get-pip.py --user
-      - run: pip install awscli --upgrade --user
-            
-      # - restore_cache:
-      #     keys:
-      #       - v1-{{ .Branch }}
-      #     paths:
-      #       - /caches/helloworld.tar
-      # - run:
-      #     name: Load Docker image layer cache
-      #     command: |
-      #       set +o pipefail
-      #       docker load -i /caches/helloworld.tar | true
-      # - run:
-      #     name: Build application Docker image
-      #     command: |
-      #       docker build --cache-from=helloworld -t helloworld .
-      # - run:
-      #   name: Save Docker image layer cache
-      #   command: |
-      #     mkdir -p /caches
-      #     docker save -o /caches/helloworld.tar helloworld
-      # - save_cache:
-      #   key: v1-{{ .Branch }}-{{ epoch }}
-      #   paths:
-      #     - /caches/helloworld.tar
-      # - run:
-      #     name: Run tests
-      #     command: |
-      #       docker-compose -f ./docker-compose.test.yml up
-      # - deploy:
-      #   name: Push application Docker image
-      #   command: |
-      #     if [ "${CIRCLE_BRANCH}" == "master" ]; then
-      #       login="$(aws ecr get-login)"
-      #       ${login}
-      #       docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-      #       docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-      #     fi            
+      # build the application image
+      # -v /var/run/docker.sock:/var/run/docker.sock 
+      - run: 
+          name: Build application Docker image
+          command: sudo docker build -t aphexddb/helloworld:${CIRCLE_SHA1} .      
 
+      - run:
+          name: Install AWS CLI
+          command: |
+            curl -O https://bootstrap.pypa.io/get-pip.py
+            python get-pip.py --user
+            PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
+
+      - deploy:
+          name: Push application Docker image
+          command: |
+            export PATH=~/.local/bin:$PATH
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              login="$(aws ecr get-login)"
+              ${login}
+              docker tag helloworld "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              docker push "${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+            fi            

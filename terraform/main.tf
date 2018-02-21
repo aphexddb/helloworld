@@ -4,6 +4,6 @@ provider "aws" {
   region = "${var.region}"
 }
 
-resource "aws_ecr_repository" "app" {
-  name = "app"
+resource "aws_ecr_repository" "helloworld" {
+  name = "helloworld"
 }

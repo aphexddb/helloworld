@@ -50,8 +50,8 @@ jobs:
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-              tag="docker tag helloworld:latest ${ECR_ENDPOINT}/helloworld:latest" #${CIRCLE_SHA1}
-              push="docker push ${ECR_ENDPOINT}/helloworld:latest" #${CIRCLE_SHA1}
+              tag="docker tag helloworld:${CIRCLE_SHA1} ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}" #${CIRCLE_SHA1}
+              push="docker push ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}" #${CIRCLE_SHA1}
               echo "Logging into Docker registry..."
               ${login}
               echo "Tagging image -> ${tag}"

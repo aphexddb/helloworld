@@ -34,7 +34,7 @@ jobs:
       - run: 
           name: Build application Docker image
           command: |
-            docker build -t helloworld .
+            docker build -t helloworld:${CIRCLE_SHA1} .                  
             # docker build -t helloworld:${CIRCLE_SHA1} .                  
 
       - run:

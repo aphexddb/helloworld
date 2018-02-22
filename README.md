@@ -2,6 +2,8 @@
 
 Simple hello world app.
 
+[![CircleCI](https://circleci.com/gh/aphexddb/helloworld.svg?style=svg)](https://circleci.com/gh/aphexddb/helloworld)
+
 ## Continuous Integration
 
 Continuous Integration is done via CircleCI. The [CI script](.circleci/config.yml) does the following:

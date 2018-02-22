@@ -34,8 +34,7 @@ jobs:
       - run: 
           name: Build application Docker image
           command: |
-            VERSION=`cat ./VERSION`
-            build="docker build -t helloworld:${VERSION} ."
+            build="docker build -t helloworld:${CIRCLE_SHA1} ."
             echo "Building image -> ${build}"
 
       - run:
@@ -48,12 +47,11 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
-            VERSION=`cat ./VERSION`
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-              tag="docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}"
-              push="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"
+              tag="docker tag helloworld:${CIRCLE_SHA1} ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              push="docker push ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
               echo "Logging into Docker registry..."
               ${login}
               echo "Tagging image -> ${tag}"

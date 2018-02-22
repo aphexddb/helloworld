@@ -29,8 +29,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
 
-      # build the application image
-      # run with sudo for local dev builds
+      # build the application image (run with sudo for local circleci dev builds)
       - run: 
           name: Build application Docker image
           command: |

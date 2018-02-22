@@ -34,7 +34,7 @@ jobs:
           name: Build application Docker image
           command: |
             VERSION=`cat ./VERSION`-`git describe --tags --always --dirty`
-            buildCmd="docker build -t helloworld:${CIRCLE_SHA1} ."
+            buildCmd="docker build -t helloworld:${VERSION} ."
             echo "Building image -> ${buildCmd}"
             ${buildCmd}
 
@@ -52,8 +52,8 @@ jobs:
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-              tagCmd="docker tag helloworld:${CIRCLE_SHA1} ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-              pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              tagCmd="docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}"
+              pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"
               echo "Logging into Docker registry..."
               ${login}
               echo "Tagging image -> ${tagCmd}"

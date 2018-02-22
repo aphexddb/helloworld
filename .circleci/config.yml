@@ -34,8 +34,10 @@ jobs:
       - run: 
           name: Build application Docker image
           command: |
-            build="docker build -t helloworld:${CIRCLE_SHA1} ."
-            echo "Building image -> ${build}"
+            VERSION=`cat ./VERSION`-`git describe --tags --always --dirty`
+            buildCmd="docker build -t helloworld:${CIRCLE_SHA1} ."
+            echo "Building image -> ${buildCmd}"
+            ${buildCmd}
 
       - run:
           name: Install AWS CLI
@@ -47,15 +49,16 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
+            VERSION=`cat ./VERSION`-`git describe --tags --always --dirty`
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-              tag="docker tag helloworld:${CIRCLE_SHA1} ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
-              push="docker push ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              tagCmd="docker tag helloworld:${CIRCLE_SHA1} ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
+              pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${CIRCLE_SHA1}"
               echo "Logging into Docker registry..."
               ${login}
-              echo "Tagging image -> ${tag}"
-              ${tag}
-              echo "Pushing image -> ${push}"
-              ${push}
+              echo "Tagging image -> ${tagCmd}"
+              ${tagCmd}
+              echo "Pushing image -> ${pushCmd}"
+              ${pushCmd}
             fi            

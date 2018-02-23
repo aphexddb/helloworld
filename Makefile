@@ -8,13 +8,13 @@ $(GOJUNITREPORT):
 	go get -u github.com/jstemmer/go-junit-report
 
 .PHONY: test
-test: $(GOJUNITREPORT) lint deps
+test: deps lint $(GOJUNITREPORT)
 	mkdir -p ./test-reports
 	go test -v $(PKGS) ./... 2>&1 | go-junit-report > ./test-reports/report.xml
 
 $(GOMETALINTER):
 	go get -u github.com/alecthomas/gometalinter	
-	gometalinter -i -u
+	gometalinter -i
 
 .PHONY: lint
 lint: $(GOMETALINTER)

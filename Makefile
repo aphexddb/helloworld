@@ -9,7 +9,7 @@ GOMETALINTER := $(BIN_DIR)/gometalinter
 
 $(GOMETALINTER):
 	go get -u github.com/alecthomas/gometalinter	
-	gometalinter -i -u &> /dev/null
+	gometalinter -i -u
 
 .PHONY: lint
 lint: $(GOMETALINTER)

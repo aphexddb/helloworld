@@ -1,11 +1,16 @@
 PKGS := $(shell go list ./... | grep -v /vendor)
 
-.PHONY: test
-test: deps lint
-	go test $(PKGS)
-
 BIN_DIR := $(GOPATH)/bin
 GOMETALINTER := $(BIN_DIR)/gometalinter
+GOJUNITREPORT := $(BIN_DIR)/go-junit-report
+
+$(GOJUNITREPORT):
+	go get -u github.com/jstemmer/go-junit-report
+
+.PHONY: test
+test: $(GOJUNITREPORT) lint deps
+	mkdir -p ./test-reports
+	go test -v $(PKGS) ./... 2>&1 | go-junit-report > ./test-reports/report.xml
 
 $(GOMETALINTER):
 	go get -u github.com/alecthomas/gometalinter	

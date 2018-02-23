@@ -23,6 +23,10 @@ jobs:
       # build the application
       - checkout 
       - run: make test
+
+      - store_test_results:
+          path: /go/src/github.com/aphexddb/helloworld/test-reports
+
       - run: make release
 
       - store_artifacts:

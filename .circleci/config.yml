@@ -42,7 +42,7 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
-            VERSION=`cat ./VERSION`-`git describe --tags --always --dirty`
+            VERSION=`cat ./VERSION`
             export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then              
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"

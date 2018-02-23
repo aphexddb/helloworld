@@ -20,8 +20,6 @@ VERSION ?= $(shell cat ./VERSION)
 PLATFORMS := windows linux darwin
 os = $(word 1, $@)
 
-ECR_ENDPOINT := 228215995433.dkr.ecr.us-west-2.amazonaws.com
-
 .PHONY: deps
 deps:
 	go get

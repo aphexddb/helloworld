@@ -1,7 +1,7 @@
 PKGS := $(shell go list ./... | grep -v /vendor)
 
 .PHONY: test
-test: lint
+test: deps lint
 	go test $(PKGS)
 
 BIN_DIR := $(GOPATH)/bin
@@ -22,13 +22,17 @@ os = $(word 1, $@)
 
 ECR_ENDPOINT := 228215995433.dkr.ecr.us-west-2.amazonaws.com
 
+.PHONY: deps
+deps:
+	go get
+
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
 	mkdir -p release
 	GOOS=$(os) GOARCH=amd64 go build -o release/$(BINARY)-$(VERSION)-$(os)-amd64
 
 .PHONY: release
-release: linux darwin #windows
+release: deps linux darwin #windows
 	cp release/$(BINARY)-$(VERSION)-linux-amd64 release/$(BINARY)-linux
 
 .PHONY: docker

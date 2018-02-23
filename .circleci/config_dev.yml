@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci_dev:latest
+    working_directory: /go/src/github.com/aphexddb/helloworld
+
+    steps:
+      - checkout 
+      - run: make test
+      - store_test_results:
+          path: /go/src/github.com/aphexddb/helloworld/test-reports
+      - run: make release
+      - store_artifacts:
+          path: /go/src/github.com/aphexddb/helloworld/release
+
+  

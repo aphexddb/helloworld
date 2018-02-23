@@ -1,32 +1,36 @@
 PKGS := $(shell go list ./... | grep -v /vendor)
 
 BIN_DIR := $(GOPATH)/bin
+BINARY := helloworld
+VERSION ?= $(shell cat ./VERSION)
+PLATFORMS := windows linux darwin
+os = $(word 1, $@)
+
 GOMETALINTER := $(BIN_DIR)/gometalinter
 GOJUNITREPORT := $(BIN_DIR)/go-junit-report
+GODEP := $(BIN_DIR)/dep
+
+$(GOMETALINTER):
+	go get -u github.com/alecthomas/gometalinter	
+	gometalinter -i
 
 $(GOJUNITREPORT):
 	go get -u github.com/jstemmer/go-junit-report
+
+$(GODEP):
+	go get -u github.com/golang/dep/cmd/dep	
+
+.PHONY: lint
+lint: $(GOMETALINTER)
+	gometalinter --disable=gotype --exclude=vendor $(PKGS) ./...
 
 .PHONY: test
 test: deps lint $(GOJUNITREPORT)
 	mkdir -p ./test-reports
 	go test -v $(PKGS) ./... 2>&1 | go-junit-report > ./test-reports/report.xml
 
-$(GOMETALINTER):
-	go get -u github.com/alecthomas/gometalinter	
-	gometalinter -i
-
-.PHONY: lint
-lint: $(GOMETALINTER)
-	gometalinter --disable=gotype ./...
-
-BINARY := helloworld
-VERSION ?= $(shell cat ./VERSION)
-PLATFORMS := windows linux darwin
-os = $(word 1, $@)
-
 .PHONY: deps
-deps:
+deps: $(GODEP)
 	go get
 
 .PHONY: $(PLATFORMS)

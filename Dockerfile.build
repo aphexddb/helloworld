@@ -1,0 +1,12 @@
+# Adds binaries to circleci build container for speed purposes
+FROM circleci/golang:1.9
+
+# install meta linter
+RUN go get -u github.com/alecthomas/gometalinter	
+RUN gometalinter -i
+
+# install junit reporter
+RUN go get -u github.com/jstemmer/go-junit-report
+
+# install dep
+RUN go get -u github.com/golang/dep/cmd/dep	

@@ -1,2 +1,4 @@
 .env
 helloworld
+bin/
+release/

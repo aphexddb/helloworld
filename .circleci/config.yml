@@ -22,21 +22,15 @@ jobs:
     steps:
       # build the application
       - checkout 
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...      
-      - run: go build -o helloworld main.go
+      - run: make release
 
       - setup_remote_docker:
           docker_layer_caching: true
 
       # build the application image (run with sudo for local circleci dev builds)
       - run: 
-          name: Build application Docker image
-          command: |
-            VERSION=`cat ./VERSION`-`git describe --tags --always --dirty`
-            buildCmd="docker build -t helloworld:${VERSION} ."
-            echo "Building image -> ${buildCmd}"
-            ${buildCmd}
+          name: Build and tag application Docker image
+          command: make docker
 
       - run:
           name: Install AWS CLI

@@ -13,14 +13,20 @@ import (
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, `<!DOCTYPE html><html lang="en">Hello, world. <a href="/meow">Meow</a>. `)
+	_, err := fmt.Fprintf(w, `<!DOCTYPE html><html lang="en">Hello, world. <a href="/meow">Meow</a>. `)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // MeowHandler meows.
 func MeowHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"Yes": "Meow!"}`)
+	_, err := fmt.Fprintf(w, `{"Yes": "Meow!"}`)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func main() {

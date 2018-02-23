@@ -4,6 +4,15 @@ Simple hello world app.
 
 [![CircleCI](https://circleci.com/gh/aphexddb/helloworld.svg?style=svg)](https://circleci.com/gh/aphexddb/helloworld)
 
+## Building
+
+Build steps are performed via `make`.
+
+* `make lint` performing linting via gometalinter
+* `make test` runs tests
+* `make release` compiles the application
+* `make docker` builds the docker image and tags it
+
 ## Continuous Integration
 
 Continuous Integration is done via CircleCI. The [CI script](.circleci/config.yml) does the following:

@@ -25,6 +25,9 @@ jobs:
       - run: make test
       - run: make release
 
+      - store_artifacts:
+          path: /go/src/github.com/aphexddb/helloworld/release
+
       - setup_remote_docker:
           docker_layer_caching: true
 

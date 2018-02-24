@@ -6,11 +6,11 @@ Simple hello world app.
 
 ## Building
 
-Build steps are performed via `make`.
+The source of truth for the version is the [`VERSION`](./VERSION) file. All build steps are performed via `make`.
 
 * `make lint` performing linting via gometalinter
 * `make test` runs tests
-* `make release` compiles the application
+* `make release` compiles the application for multiple OS's
 * `make docker` builds the docker image and tags it
 
 ### Dependencies

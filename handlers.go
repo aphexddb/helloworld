@@ -1,12 +1,9 @@
-package main
+package helloworld
 
 import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/gorilla/mux"
 )
 
 // HomeHandler serves up the homepage
@@ -27,23 +24,4 @@ func MeowHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-func main() {
-	log.Println("starting helloworld")
-
-	r := mux.NewRouter()
-	r.HandleFunc("/", HomeHandler)
-	r.HandleFunc("/meow", MeowHandler)
-
-	srv := &http.Server{
-		Handler: r,
-		Addr:    "0.0.0.0:8080",
-		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	log.Fatal(srv.ListenAndServe())
-
 }

@@ -1,11 +1,12 @@
 PKGS := $(shell go list ./... | grep -v /vendor)
 
-BIN_DIR := $(GOPATH)/bin
 BINARY := helloworld
+ENTRYPOINT := cmd/server.go
 VERSION ?= $(shell cat ./VERSION)
 PLATFORMS := windows linux darwin
 os = $(word 1, $@)
 
+BIN_DIR := $(GOPATH)/bin
 GOMETALINTER := $(BIN_DIR)/gometalinter
 GOJUNITREPORT := $(BIN_DIR)/go-junit-report
 GODEP := $(BIN_DIR)/dep
@@ -36,7 +37,7 @@ deps: $(GODEP)
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
 	mkdir -p release
-	GOOS=$(os) GOARCH=amd64 go build -o release/$(BINARY)-$(VERSION)-$(os)-amd64
+	GOOS=$(os) GOARCH=amd64 go build -o release/$(BINARY)-$(VERSION)-$(os)-amd64 $(ENTRYPOINT)
 
 .PHONY: release
 release: deps linux darwin #windows

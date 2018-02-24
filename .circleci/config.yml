@@ -2,8 +2,6 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 
-# The following stanza defines a map named defaults with a variable that may be inserted using the YAML merge (<<: *) key 
-# later in the file to save some typing. See http://yaml.org/type/merge.html for details.
 defaults: &defaults
   working_directory: /go/src/github.com/aphexddb/helloworld
   docker:
@@ -21,33 +19,28 @@ jobs:
       - run: make release
       - store_artifacts:
           path: /go/src/github.com/aphexddb/helloworld/release       
-
-  deploy:
-    <<: *defaults
-    requires:
-      - build
-    filters:
-      branches:
-        only:
-          - master
-    steps:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: 
           name: Build and tag application Docker image
-          command: make docker
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              make docker
+            fi
       - run:
           name: Install AWS CLI
           command: |
-            curl -O https://bootstrap.pypa.io/get-pip.py
-            python get-pip.py --user
-            PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              curl -O https://bootstrap.pypa.io/get-pip.py
+              python get-pip.py --user
+              PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
+            fi
       - deploy:
           name: Push application Docker image
           command: |
             VERSION=`cat ./VERSION`
             export PATH=~/.local/bin:$PATH
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then              
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
               tagCmd="docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}"
               pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"

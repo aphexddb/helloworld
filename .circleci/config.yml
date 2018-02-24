@@ -22,7 +22,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: 
-          name: Build and tag application Docker image
+          name: Build Docker image
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               make docker
@@ -36,7 +36,7 @@ jobs:
               PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
             fi
       - deploy:
-          name: Push application Docker image
+          name: Push Docker image to repository
           command: |
             VERSION=`cat ./VERSION`
             export PATH=~/.local/bin:$PATH

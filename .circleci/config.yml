@@ -28,7 +28,8 @@ jobs:
       - build
     filters:
       branches:
-        only: master
+        only:
+          - master
     steps:
       - setup_remote_docker:
           docker_layer_caching: true

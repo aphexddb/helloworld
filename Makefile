@@ -15,24 +15,24 @@ $(GOMETALINTER):
 	go get -u github.com/alecthomas/gometalinter	
 	gometalinter -i
 
-$(GOJUNITREPORT):
-	go get -u github.com/jstemmer/go-junit-report
-
 $(GODEP):
 	go get -u github.com/golang/dep/cmd/dep	
+
+$(GOJUNITREPORT):
+	go get -u github.com/jstemmer/go-junit-report	
 
 .PHONY: lint
 lint: $(GOMETALINTER)
 	gometalinter --disable=gotype --exclude=vendor $(PKGS) ./...
 
+.PHONY: deps
+deps: $(GODEP)
+	go get
+
 .PHONY: test
 test: deps lint $(GOJUNITREPORT)
 	mkdir -p ./test-reports
 	go test -v $(PKGS) ./... 2>&1 | go-junit-report > ./test-reports/report.xml
-
-.PHONY: deps
-deps: $(GODEP)
-	go get
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):

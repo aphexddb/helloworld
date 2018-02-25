@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci_dev:latest
+      - image: aphexddb/golang_build:latest
     working_directory: /go/src/github.com/aphexddb/helloworld
 
     steps:

@@ -5,7 +5,7 @@
 defaults: &defaults
   working_directory: /go/src/github.com/aphexddb/helloworld
   docker:
-    - image: circleci/golang:1.9
+    - image: aphexddb/golang_build:latest
 
 version: 2
 jobs:

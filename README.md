@@ -39,7 +39,9 @@ circleci config validate -c .circleci/config.yml
 Local builds using the [`circleci`](https://circleci.com/docs/2.0/local-jobs/#circleci-command-line-interface-cli-overview) command line tool use a different container for speed purposes. To build the container:
 
 ```bash
-docker build -t circleci_dev:latest -f Dockerfile.build .
+docker build -t golang_build -f Dockerfile.ci .
+docker tag golang_build:latest aphexddb/golang_build:latest
+docker push aphexddb/golang_build:latest
 ```
 
 Then run this to to a quick local CI build:

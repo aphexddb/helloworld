@@ -16,3 +16,8 @@ RUN go get -u github.com/jstemmer/go-junit-report
 
 # install dep
 RUN go get -u github.com/golang/dep/cmd/dep	
+
+# install aws cli
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py --user && \
+    PATH=~/.local/bin:$PATH pip install awscli --upgrade --user

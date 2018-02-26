@@ -26,18 +26,12 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: 
-          name: Build Docker image
+          name: Build and tag Docker image
           command: |
-              VERSION=`cat ./VERSION`
-              make docker
-              docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}
+            VERSION=`cat ./VERSION` make docker
+            VERSION=`cat ./VERSION` docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}
       - deploy:
           name: Push Docker image to registry
-          command: |
-            VERSION=`cat ./VERSION`
-            login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-            pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"
-            echo "Logging into Docker registry..."
-            ${login}
-            echo "Pushing image -> ${pushCmd}"
-            ${pushCmd}
+          command: |            
+            $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})
+            VERSION=`cat ./VERSION` docker push ${ECR_ENDPOINT}/helloworld:${VERSION}

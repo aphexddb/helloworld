@@ -45,5 +45,4 @@ release: deps linux darwin #windows
 
 .PHONY: docker
 docker:
-	@echo "Building and tagging Docker image v$(VERSION)"
 	docker build -t $(BINARY):$(VERSION) .

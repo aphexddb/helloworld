@@ -7,6 +7,9 @@
 #
 FROM circleci/golang:1.9
 
+# install dep
+RUN go get -u github.com/golang/dep/cmd/dep
+
 # install meta linter
 RUN go get -u github.com/alecthomas/gometalinter	
 RUN gometalinter -i
@@ -14,14 +17,12 @@ RUN gometalinter -i
 # install junit reporter
 RUN go get -u github.com/jstemmer/go-junit-report
 
-# install dep
-RUN go get -u github.com/golang/dep/cmd/dep	
-
-# install aws cli
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py --user && \
-    PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
-
-# pre-install sqlite3
+# install and build sqlite3
 RUN go get github.com/mattn/go-sqlite3 && \
     go install github.com/mattn/go-sqlite3
+
+# install aws cli and update path
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py --user && \
+    ~/.local/bin/pip install awscli --upgrade --user
+ENV PATH="/home/circleci/.local/bin:${PATH}"    

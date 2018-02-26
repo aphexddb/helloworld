@@ -27,19 +27,10 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               make docker
             fi
-      - run:
-          name: Install AWS CLI
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              curl -O https://bootstrap.pypa.io/get-pip.py
-              python get-pip.py --user
-              PATH=~/.local/bin:$PATH pip install awscli --upgrade --user
-            fi
       - deploy:
           name: Push Docker image to repository
           command: |
             VERSION=`cat ./VERSION`
-            export PATH=~/.local/bin:$PATH
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
               tagCmd="docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}"

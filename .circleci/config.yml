@@ -11,6 +11,10 @@ version: 2
 jobs:
   build:
     <<: *defaults
+    filters:
+      branches:
+        only:
+          - master
     steps:
       - checkout 
       - run: make test
@@ -24,21 +28,16 @@ jobs:
       - run: 
           name: Build Docker image
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              VERSION=`cat ./VERSION`
               make docker
-            fi
+              docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}
       - deploy:
-          name: Push Docker image to repository
+          name: Push Docker image to registry
           command: |
             VERSION=`cat ./VERSION`
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
-              tagCmd="docker tag helloworld:${VERSION} ${ECR_ENDPOINT}/helloworld:${VERSION}"
-              pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"
-              echo "Logging into Docker registry..."
-              ${login}
-              echo "Tagging image -> ${tagCmd}"
-              ${tagCmd}
-              echo "Pushing image -> ${pushCmd}"
-              ${pushCmd}
-            fi          
+            login="$(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION})"
+            pushCmd="docker push ${ECR_ENDPOINT}/helloworld:${VERSION}"
+            echo "Logging into Docker registry..."
+            ${login}
+            echo "Pushing image -> ${pushCmd}"
+            ${pushCmd}

@@ -27,7 +27,7 @@ lint: $(GOMETALINTER)
 
 .PHONY: deps
 deps: $(GODEP)
-	go get
+	dep ensure
 
 .PHONY: test
 test: deps lint $(GOJUNITREPORT)
